@@ -1,0 +1,798 @@
+openapi: 3.0.0
+info:
+  title: Block Management API
+  description: API for managing blocks, employees, tasks, performance history, and task assignments
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+tags:
+  - name: Blocks
+    description: Manage blocks
+  - name: Employees
+    description: Manage employees
+  - name: Tasks
+    description: Manage tasks
+  - name: PerformanceHistory
+    description: Manage performance history
+  - name: TaskAssignments
+    description: Manage task assignments
+paths:
+  /blocks:
+    get:
+      tags:
+        - Blocks
+      summary: Get all blocks
+      responses:
+        '200':
+          description: List of blocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Block'
+    post:
+      tags:
+        - Blocks
+      summary: Create a new block
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockCreate'
+      responses:
+        '201':
+          description: Block created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+  /blocks/bulk:
+    post:
+      tags:
+        - Blocks
+      summary: Bulk create blocks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/BlockCreate'
+      responses:
+        '201':
+          description: Blocks created
+  /blocks/{id}:
+    get:
+      tags:
+        - Blocks
+      summary: Get block by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Block found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+    put:
+      tags:
+        - Blocks
+      summary: Update block by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUpdate'
+      responses:
+        '200':
+          description: Block updated
+    delete:
+      tags:
+        - Blocks
+      summary: Delete block by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Block deleted
+  /blocks/{blockId}/employees:
+    get:
+      tags:
+        - Blocks
+      summary: Get all employees in a block
+      parameters:
+        - name: blockId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+  /blocks/{blockId}/employee/{employeeId}:
+    get:
+      tags:
+        - Blocks
+      summary: Get a specific employee in a block
+      parameters:
+        - name: blockId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+  /blocks/{blockId}/tasks:
+    get:
+      tags:
+        - Blocks
+      summary: Get all tasks in a block
+      parameters:
+        - name: blockId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+  /blocks/{blockId}/task/{taskId}:
+    get:
+      tags:
+        - Blocks
+      summary: Get a specific task in a block
+      parameters:
+        - name: blockId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+# Employees endpoints
+  /employees:
+    get:
+      tags:
+        - Employees
+      summary: Get all employees
+      responses:
+        '200':
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+    post:
+      tags:
+        - Employees
+      summary: Create new employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreate'
+      responses:
+        '201':
+          description: Employee created
+  /employees/bulk:
+    post:
+      tags:
+        - Employees
+      summary: Bulk create employees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EmployeeCreate'
+      responses:
+        '201':
+          description: Employees created
+  /employees/{id}:
+    get:
+      tags:
+        - Employees
+      summary: Get employee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    put:
+      tags:
+        - Employees
+      summary: Update employee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdate'
+      responses:
+        '200':
+          description: Employee updated
+    delete:
+      tags:
+        - Employees
+      summary: Delete employee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee deleted
+# Tasks endpoints
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get all tasks
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      tags:
+        - Tasks
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created
+  /tasks/bulk:
+    post:
+      tags:
+        - Tasks
+      summary: Bulk create tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Tasks created
+  /tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      summary: Get task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+    put:
+      tags:
+        - Tasks
+      summary: Update task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated
+    delete:
+      tags:
+        - Tasks
+      summary: Delete task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task deleted
+# Performance History endpoints
+  /performance-history:
+    get:
+      tags:
+        - PerformanceHistory
+      summary: Get all performance records
+      responses:
+        '200':
+          description: List of performance history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PerformanceHistory'
+    post:
+      tags:
+        - PerformanceHistory
+      summary: Create performance record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerformanceHistoryCreate'
+      responses:
+        '201':
+          description: Performance record created
+  /performance-history/bulk:
+    post:
+      tags:
+        - PerformanceHistory
+      summary: Bulk create performance records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PerformanceHistoryCreate'
+      responses:
+        '201':
+          description: Records created
+  /performance-history/{id}:
+    get:
+      tags:
+        - PerformanceHistory
+      summary: Get performance record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Performance record found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceHistory'
+    put:
+      tags:
+        - PerformanceHistory
+      summary: Update performance record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerformanceHistoryUpdate'
+      responses:
+        '200':
+          description: Record updated
+    delete:
+      tags:
+        - PerformanceHistory
+      summary: Delete performance record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Record deleted
+  /performance-history/block/{blockId}:
+    get:
+      tags:
+        - PerformanceHistory
+      summary: Get all performance records by block
+      parameters:
+        - name: blockId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of performance history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PerformanceHistory'
+# Task Assignment endpoints
+  /task-assignments:
+    get:
+      tags:
+        - TaskAssignments
+      summary: Get all task assignments
+      responses:
+        '200':
+          description: List of task assignments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskAssignment'
+    post:
+      tags:
+        - TaskAssignments
+      summary: Create a task assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskAssignmentCreate'
+      responses:
+        '201':
+          description: Assignment created
+  /task-assignments/bulk:
+    post:
+      tags:
+        - TaskAssignments
+      summary: Bulk create task assignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskAssignmentCreate'
+      responses:
+        '201':
+          description: Assignments created
+  /task-assignments/{id}:
+    get:
+      tags:
+        - TaskAssignments
+      summary: Get assignment by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assignment found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAssignment'
+    delete:
+      tags:
+        - TaskAssignments
+      summary: Delete assignment by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assignment deleted
+
+components:
+  schemas:
+    Block:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        employeesCount:
+          type: integer
+        vehiclesCount:
+          type: integer
+        tasksCompleted:
+          type: integer
+        tasksTotal:
+          type: integer
+        performanceMonthly:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    BlockCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        employeesCount:
+          type: integer
+        vehiclesCount:
+          type: integer
+        tasksCompleted:
+          type: integer
+        tasksTotal:
+          type: integer
+        performanceMonthly:
+          type: number
+    BlockUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        employeesCount:
+          type: integer
+        vehiclesCount:
+          type: integer
+        tasksCompleted:
+          type: integer
+        tasksTotal:
+          type: integer
+        performanceMonthly:
+          type: number
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+        performance:
+          type: number
+        tasksCompleted:
+          type: integer
+        tasksAssigned:
+          type: integer
+        blockId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    EmployeeCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+        performance:
+          type: number
+        tasksCompleted:
+          type: integer
+        tasksAssigned:
+          type: integer
+        blockId:
+          type: string
+    EmployeeUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+        performance:
+          type: number
+        tasksCompleted:
+          type: integer
+        tasksAssigned:
+          type: integer
+        blockId:
+          type: string
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        progress:
+          type: number
+        priority:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        blockId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    TaskCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        progress:
+          type: number
+        priority:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        blockId:
+          type: string
+    TaskUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        progress:
+          type: number
+        priority:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        blockId:
+          type: string
+    PerformanceHistory:
+      type: object
+      properties:
+        id:
+          type: string
+        period:
+          type: string
+        value:
+          type: number
+        blockId:
+          type: string
+    PerformanceHistoryCreate:
+      type: object
+      properties:
+        period:
+          type: string
+        value:
+          type: number
+        blockId:
+          type: string
+    PerformanceHistoryUpdate:
+      type: object
+      properties:
+        period:
+          type: string
+        value:
+          type: number
+        blockId:
+          type: string
+    TaskAssignment:
+      type: object
+      properties:
+        id:
+          type: string
+        taskId:
+          type: string
+        employeeId:
+          type: string
+    TaskAssignmentCreate:
+      type: object
+      properties:
+        taskId:
+          type: string
+        employeeId:
+          type: string
